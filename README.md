@@ -1,19 +1,19 @@
 # Loomis Head Trainer
 
-Outil simple pour s'entraîner au dessin de têtes en perspective. Il affiche un modèle 3D (méthode Loomis) que tu peux faire pivoter sur les axes X, Y et Z, ou générer des angles aléatoires avec le bouton **Random**.
+A simple tool to practice drawing heads in perspective. It displays a 3D model (Loomis method) that you can rotate on the X, Y, and Z axes, or generate random angles with the **Random** button.
 
-**Essayer en ligne :** [https://lucasfabs.github.io/loomis-generator/](https://lucasfabs.github.io/loomis-generator/)
+**Try it online:** [https://lucasfabs.github.io/loomis-generator/](https://lucasfabs.github.io/loomis-generator/)
 
-## Référencer
+## Reference
 
 ```
 Loomis Head Trainer — https://lucasfabs.github.io/loomis-generator/
 ```
 
-## Lancer en local
+## Run locally
 
 ```bash
 python3 -m http.server
 ```
 
-Puis ouvre [http://localhost:8000](http://localhost:8000).
+Then open [http://localhost:8000](http://localhost:8000).

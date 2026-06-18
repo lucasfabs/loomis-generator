@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Outil gratuit pour s'entraîner au dessin de têtes en perspective avec la méthode Loomis.">
+  <meta name="description" content="Free tool to practice drawing heads in perspective using the Loomis method.">
   <meta property="og:title" content="Loomis Head Trainer">
-  <meta property="og:description" content="Génère des angles de tête aléatoires pour t'entraîner au dessin.">
+  <meta property="og:description" content="Generate random head angles to practice your drawing skills.">
   <meta property="og:url" content="https://lucasfabs.github.io/loomis-generator/">
   <title>Loomis Head Trainer</title>
   <style>
@@ -231,7 +231,7 @@
     const MODELS = [
       { id: 'loomis_head', label: 'Head', path: 'models/loomis_head.glb' },
       { id: 'loomis_planes', label: 'Planes', path: 'models/loomis_head_-_planes__essential_form.glb' },
-      { id: 'loomis_neck', label: 'Cou', path: 'models/loomis_head_study_with_a_neck.glb' }
+      { id: 'loomis_neck', label: 'Neck', path: 'models/loomis_head_study_with_a_neck.glb' }
     ];
 
     const AXES = {
@@ -423,8 +423,8 @@
           if (activeModelId !== modelConfig.id) return;
 
           showError(
-            'Impossible de charger "' + modelConfig.label + '". ' +
-            'Vérifiez ' + modelConfig.path + ' et utilisez un serveur local.'
+            'Could not load "' + modelConfig.label + '". ' +
+            'Check that ' + modelConfig.path + ' exists and use a local server.'
           );
 
           addModelToScene(createPlaceholderSphere());
