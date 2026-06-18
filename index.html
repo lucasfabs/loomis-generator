@@ -166,6 +166,60 @@
       background: #333;
     }
 
+    .hud-input {
+      width: 100%;
+      padding: 0.15rem 0.25rem;
+      border: 1px solid #555;
+      background: #222;
+      color: #fff;
+      font-size: 0.7rem;
+      font-variant-numeric: tabular-nums;
+      outline: none;
+    }
+
+    .hud-input:focus {
+      border-color: #999;
+    }
+
+    #timer-block {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .timer-footer {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    #btn-timer {
+      padding: 0.35rem 0.6rem;
+      border: 1px solid #fff;
+      background: rgba(0, 0, 0, 0.6);
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    #btn-timer:hover {
+      background: #222;
+    }
+
+    #btn-timer.active {
+      background: #fff;
+      color: #111;
+    }
+
+    #timer-countdown {
+      font-size: 0.7rem;
+      font-variant-numeric: tabular-nums;
+      color: #ccc;
+    }
+
     @media (max-width: 480px) {
       #hud {
         padding: 0.5rem;
@@ -187,6 +241,15 @@
       #btn-random {
         font-size: 0.65rem;
         padding: 0.35rem 0.6rem;
+      }
+
+      #btn-timer {
+        font-size: 0.6rem;
+        padding: 0.3rem 0.5rem;
+      }
+
+      #timer-countdown {
+        font-size: 0.6rem;
       }
     }
   </style>
@@ -222,6 +285,18 @@
       </div>
 
       <button id="btn-random" type="button">Random</button>
+
+      <div id="timer-block">
+        <div class="hud-row hud-row--wide">
+          <label for="timer-interval">Timer</label>
+          <input type="number" id="timer-interval" class="hud-input" min="0.5" max="60" step="0.5" value="1">
+          <span class="slider-value">min</span>
+        </div>
+        <div class="timer-footer">
+          <button id="btn-timer" type="button">Start</button>
+          <span id="timer-countdown"></span>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -264,6 +339,13 @@
     const sliderZoom = document.getElementById('slider-zoom');
     const valZoom = document.getElementById('val-zoom');
     const btnRandom = document.getElementById('btn-random');
+    const timerIntervalInput = document.getElementById('timer-interval');
+    const btnTimer = document.getElementById('btn-timer');
+    const timerCountdown = document.getElementById('timer-countdown');
+
+    let timerActive = false;
+    let timerTimeoutId = null;
+    let timerEndsAt = 0;
 
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x494949);
@@ -472,6 +554,71 @@
       applyRotation();
     }
 
+    function getTimerIntervalMs() {
+      const minutes = parseFloat(timerIntervalInput.value);
+      if (isNaN(minutes) || minutes <= 0) return 60000;
+      return minutes * 60 * 1000;
+    }
+
+    function clearTimerTimeout() {
+      if (timerTimeoutId !== null) {
+        clearTimeout(timerTimeoutId);
+        timerTimeoutId = null;
+      }
+    }
+
+    function scheduleTimerTick() {
+      clearTimerTimeout();
+      const intervalMs = getTimerIntervalMs();
+      timerEndsAt = Date.now() + intervalMs;
+
+      timerTimeoutId = setTimeout(function () {
+        if (!timerActive) return;
+        randomizeRotation();
+        scheduleTimerTick();
+      }, intervalMs);
+    }
+
+    function updateTimerUI() {
+      if (!timerActive) {
+        timerCountdown.textContent = '';
+        return;
+      }
+
+      const remainingMs = Math.max(0, timerEndsAt - Date.now());
+      const totalSeconds = Math.ceil(remainingMs / 1000);
+      const minutes = Math.floor(totalSeconds / 60);
+      const seconds = totalSeconds % 60;
+      timerCountdown.textContent = minutes + ':' + String(seconds).padStart(2, '0');
+    }
+
+    function startTimer() {
+      timerActive = true;
+      btnTimer.textContent = 'Stop';
+      btnTimer.classList.add('active');
+      timerIntervalInput.disabled = true;
+      scheduleTimerTick();
+      updateTimerUI();
+    }
+
+    function stopTimer() {
+      timerActive = false;
+      clearTimerTimeout();
+      timerEndsAt = 0;
+      btnTimer.textContent = 'Start';
+      btnTimer.classList.remove('active');
+      timerIntervalInput.disabled = false;
+      timerCountdown.textContent = '';
+    }
+
+    function toggleTimer() {
+      if (timerActive) {
+        stopTimer();
+      } else {
+        startTimer();
+      }
+    }
+
     function onSliderInput(axis, value) {
       rotation[axis] = parseFloat(value);
       updateSliderUI();
@@ -490,6 +637,7 @@
     sliderZoom.addEventListener('input', function () { onZoomInput(sliderZoom.value); });
 
     btnRandom.addEventListener('click', randomizeRotation);
+    btnTimer.addEventListener('click', toggleTimer);
 
     function onResize() {
       const width = viewport.clientWidth;
@@ -502,6 +650,7 @@
 
     function animate() {
       requestAnimationFrame(animate);
+      updateTimerUI();
       renderer.render(scene, camera);
     }
 
