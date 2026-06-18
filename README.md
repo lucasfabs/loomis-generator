@@ -4,6 +4,12 @@ Outil simple pour s'entraîner au dessin de têtes en perspective. Il affiche un
 
 **Essayer en ligne :** [https://lucasfabs.github.io/loomis-generator/](https://lucasfabs.github.io/loomis-generator/)
 
+## Référencer
+
+```
+Loomis Head Trainer — https://lucasfabs.github.io/loomis-generator/
+```
+
 ## Lancer en local
 
 ```bash
